@@ -1,0 +1,49 @@
+{
+  "name": "wbot",
+  "version": "0.2.0",
+  "description": "A simple whatsapp reply bot using puppeteer.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "pack": "pkg ."
+  },
+  "bin": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diogo-bruno/nodejs-wbot"
+  },
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "automation"
+  ],
+  "private": true,
+  "pkg": {
+    "scripts": "src/**/*.js",
+    "targets": [
+      "node10-win",
+      "node10-linux",
+      "node10-macos"
+    ]
+  },
+  "author": "Arpit Vasani and Diogo Bruno",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/diogo-bruno/nodejs-wbot/issues"
+  },
+  "homepage": "https://github.com/diogo-bruno/nodejs-wbot#readme",
+  "dependencies": {
+    "cli-progress": "^3.8.2",
+    "mel-spintax": "^1.0.4",
+    "express": "^4.17.1",
+    "mime": "^2.4.6",
+    "node-fetch": "^2.6.1",
+    "ora": "^5.1.0",
+    "puppeteer-core": "^5.3.1",
+    "qrcode-terminal": "^0.12.0",
+    "yargs": "^16.1.0"
+  },
+  "devDependencies": {
+    "pkg": "^4.4.9"
+  }
+}
