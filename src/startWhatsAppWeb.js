@@ -4,6 +4,7 @@ const spintax = require('mel-spintax');
 
 require('./welcome');
 
+var fs = require('fs');
 var spinner = require('./step');
 var utils = require('./utils');
 var qrcode = require('qrcode-terminal');
@@ -12,7 +13,8 @@ var argv = require('yargs').argv;
 var rev = require('./detectRev');
 var constants = require('./constants');
 var configs = require('../bot');
-var screenshotPage = require('./screenShots').screenshotPage;
+var settings = require('./settings');
+var screenshotPage = require('./screenShots');
 
 var browser;
 
@@ -156,6 +158,17 @@ async function Main() {
       console.log(message);
     });
 
+    // When the settings file is edited multiple calls are sent to function. This will help
+    // to prevent from getting corrupted settings data
+    let timeout = 5000;
+
+    // Register a filesystem watcher
+    fs.watch(constants.BOT_SETTINGS_FILE, (event, filename) => {
+      setTimeout(() => {
+        settings.LoadBotSettings(event, filename, page);
+      }, timeout);
+    });
+
     page.exposeFunction('getFile', utils.getFileInBase64);
 
     page.exposeFunction('resolveSpintax', spintax.unspin);
@@ -180,7 +193,6 @@ async function Main() {
       .waitForSelector('[data-icon="search"]')
       .then(async () => {
         var filepath = path.join(__dirname, 'WAPI.js');
-        console.log(filepath);
         await page.addScriptTag({ path: require.resolve(filepath) });
 
         filepath = path.join(__dirname, 'WAPI.extend.js');

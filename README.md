@@ -6,7 +6,7 @@
 
 ### Quick preview
 
-![Screenshot gif](https://user-images.githubusercontent.com/6497827/58411958-1dcc8000-8093-11e9-8aeb-5747efe10266.gif)
+![image](https://user-images.githubusercontent.com/11491923/96534187-9e31e900-1265-11eb-8211-ae0b4174aebe.png)
 
 ## see the examples folder
 

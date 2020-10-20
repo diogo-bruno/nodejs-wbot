@@ -62,5 +62,5 @@ typings/
 ChromeSession*
 win*
 chromium-data
-screenshots*
+screenshots/*
 testes
