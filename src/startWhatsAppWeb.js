@@ -16,12 +16,11 @@ var configs = require('../bot');
 var settings = require('./settings');
 var screenshotPage = require('./screenShots');
 
-var browser;
+let browser;
+let page;
 
 async function Main() {
   try {
-    var page;
-
     await downloadAndStartThings();
 
     var isLogin = await checkLogin();
@@ -41,6 +40,8 @@ async function Main() {
     process.on('SIGINT', function () {
       browser.close();
     });
+
+    activeFunctionUseHere();
 
     return page;
   } catch (e) {
@@ -178,7 +179,7 @@ async function Main() {
     spinner.stop('Opening Whatsapp ... done!');
   }
 
-  async function injectScripts(page) {
+  async function injectScripts() {
     spinner.stop();
 
     spinner.start('Trying to inject the scripts');
@@ -225,7 +226,7 @@ async function Main() {
 
     if (output) {
       spinner.stop('Looks like you are already logged in');
-      await injectScripts(page);
+      await injectScripts();
     } else {
       spinner.info('You are not logged in. Please scan the QR below');
     }
@@ -248,12 +249,12 @@ async function Main() {
 
     spinner.start('Waiting for scan \nKeep in mind that it will expire after few seconds');
 
-    var isLoggedIn = await injectScripts(page);
+    var isLoggedIn = await injectScripts();
 
     await screenshotPage(page, 'getqrcode');
 
     while (!isLoggedIn) {
-      isLoggedIn = await injectScripts(page);
+      isLoggedIn = await injectScripts();
     }
 
     if (isLoggedIn) {
@@ -295,6 +296,16 @@ async function Main() {
         });
       });
     });
+  }
+
+  function activeFunctionUseHere() {
+    setInterval(async () => {
+      await page.evaluate(() => {
+        if (document.querySelector('[data-animate-modal-body="true"] div[role="button"]:last-child')) {
+          document.querySelector('[data-animate-modal-body="true"] div[role="button"]:last-child').click();
+        }
+      });
+    }, 3000);
   }
 }
 
