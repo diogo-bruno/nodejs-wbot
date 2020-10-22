@@ -11,29 +11,90 @@ app.use(
 
 const portService = 3300;
 
-var obj = {
-  fileBase64: '', // ignore data:xxx;base64,
-  typeFile: '', //audio or image or video
-  contactName: '', // name contact in list number whatsapp
-  numberTo: '', // number location country ex: +55...
-  message: '', // text mensagem...
+var exampleBody = {
+  fileBase64: 'required data:xxx;base64,...',
+  typeFile: 'audio or image or video',
+  contactName: 'name contact in list number whatsapp',
+  numberTo: 'number location country (brazil) ex: 55...',
+  message: 'text mensagem...',
 };
 
 async function enableServiceHttpWBOT(page) {
-  app.post('/sendMenssage', async (req, res) => {
+  app.post('/sendMessage', async (req, res) => {
     const body = req.body;
+    let errorValidation = [];
 
-    console.log(body);
+    if (body.fileBase64 || body.typeFile) {
+      if (!body.fileBase64 || !body.typeFile) {
+        errorValidation.push('If fileBase64 or typeFile informed, fileBase64 and typeFile is required!');
+      }
+    } else if (!body.message) {
+      errorValidation.push('If not fileBase64 informed, message is required!');
+    }
 
-    /*
-       WAPI.sendMessageBySimpleNumber('556282700271','Hello')
-       WAPI.sendMessageContactByName('name-contact','Heloo')
-       WAPI.sendFile('file-base-64','556292883546@c.us','tipo-file');
-    */
+    if (!body.numberTo && !body.contactName) {
+      errorValidation.push('NumberTo or contactName is required!');
+    }
 
-    //page.evaluate(() => {});
+    if (errorValidation.length) {
+      let msg = '';
+      errorValidation.push('Examaple body: ' + JSON.stringify(exampleBody) + '<br/>');
+      errorValidation.forEach((error) => {
+        msg += `${error}<br/>`;
+      });
+      res.status(400).send(msg);
+      return;
+    }
 
-    res.send('Ok, script evaluate');
+    if (body.fileBase64) {
+      let base64 = body.fileBase64.split('base64,');
+      if (!base64[1]) {
+        res.status(400).send('Base64 incorrect, required data:xxx;base64,...');
+        return;
+      }
+    }
+
+    if (body.numberTo && body.numberTo.startsWith('+')) {
+      body.numberTo = body.numberTo.substring(1);
+    }
+
+    const numberOrName = body.numberTo ? body.numberTo : body.contactName;
+    const isContactName = body.contactName ? true : false;
+
+    let chatId = await page.evaluate(
+      (numberOrName, isContactName) => {
+        return WAPI.getIdUser(numberOrName, isContactName);
+      },
+      numberOrName,
+      isContactName
+    );
+
+    if (!chatId) {
+      res.status(400).send('Number or ContactName not found');
+      return;
+    }
+
+    if (body.fileBase64) {
+      page.evaluate(
+        (chatId, fileBase64, typeFile, message) => {
+          WAPI.sendFile(fileBase64, chatId, typeFile, message);
+        },
+        chatId,
+        body.fileBase64,
+        body.typeFile,
+        body.message
+      );
+    } else if (body.message) {
+      page.evaluate(
+        (chatId, message) => {
+          WAPI.sendMessageToID(chatId, message);
+        },
+        chatId,
+        body.message
+      );
+    }
+
+    res.send('Send script evaluate');
   });
 
   app.listen(portService, function () {

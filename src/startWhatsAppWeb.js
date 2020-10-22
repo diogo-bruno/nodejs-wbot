@@ -38,7 +38,7 @@ async function Main() {
     process.stdin.resume();
 
     process.on('SIGINT', function () {
-      browser.close();
+      if (browser) browser.close();
     });
 
     activeFunctionUseHere();
@@ -93,8 +93,9 @@ async function Main() {
       executablePath: revisionInfo.executablePath,
       headless: utils.getOS() === 'linux' ? true : appconfig.appconfig.headless,
       defaultViewport: null,
+      ignoreHTTPSErrors: true,
       devtools: false,
-      args: [...constants.DEFAULT_CHROMIUM_ARGS, ...pptrArgv],
+      args: [...constants.DEFAULT_CHROMIUM_ARGS, ...pptrArgv, `--window-size=${1280},${900}`],
       ...extraArguments,
     });
 
@@ -175,6 +176,14 @@ async function Main() {
     page.exposeFunction('resolveSpintax', spintax.unspin);
 
     await screenshotPage(page, 'launch');
+
+    browser.on('targetdestroyed', async () => {
+      const openPages = await browser.pages();
+      if (openPages.length == 0) {
+        await browser.close();
+        process.exit(0);
+      }
+    });
 
     spinner.stop('Opening Whatsapp ... done!');
   }
@@ -300,11 +309,12 @@ async function Main() {
 
   function activeFunctionUseHere() {
     setInterval(async () => {
-      await page.evaluate(() => {
-        if (document.querySelector('[data-animate-modal-body="true"] div[role="button"]:last-child')) {
-          document.querySelector('[data-animate-modal-body="true"] div[role="button"]:last-child').click();
-        }
-      });
+      if (page && !page._closed)
+        await page.evaluate(() => {
+          if (document.querySelector('[data-animate-modal-body="true"] div[role="button"]:last-child')) {
+            document.querySelector('[data-animate-modal-body="true"] div[role="button"]:last-child').click();
+          }
+        });
     }, 3000);
   }
 }

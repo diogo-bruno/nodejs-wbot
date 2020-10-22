@@ -1,6 +1,6 @@
 # NodeJS WBOT
 
-> A simple Nodejs BOT for whatsapp web and API send message
+> A NodeJS BOT for whatsapp web and API send message
 
 ## 🔍 Preview
 
@@ -8,7 +8,34 @@
 
 ![image](https://user-images.githubusercontent.com/11491923/96534187-9e31e900-1265-11eb-8211-ae0b4174aebe.png)
 
-## see the examples folder
+## Look in examples folder
+
+```javascript
+const axiosInstance = require('./axios');
+
+const medias = require('./base64Medias');
+
+const obj = {
+  fileBase64: medias.getAudio(), // required dataType base64 data:xxx;base64,...
+  typeFile: 'audio', //audio or image or video
+  contactName: '', // name contact in list whatsapp
+  numberTo: '55999...', // number location country ex: 55...
+  message: 'Test', // text message...
+};
+
+axiosInstance
+  .post('http://localhost:3300/sendMessage', obj)
+  .then((res) => {
+    console.log(res.data);
+  })
+  .catch((error) => {
+    if (error.response.status == 400) {
+      console.error(error.data);
+    } else {
+      console.error(error);
+    }
+  });
+```
 
 ### bot.json
 
