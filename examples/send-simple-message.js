@@ -1,11 +1,19 @@
 const axiosInstance = require('./axios');
 
+// var obj = {
+//   fileBase64: '', // required dataType base64 data:xxx;base64,
+//   typeFile: '', //audio or image or video
+//   contactName: '', // name contact in list number whatsapp
+//   numberTo: '55999...', // number location country ex: 55...
+//   message: 'Hello!', // text message...
+// };
+
 var obj = {
   fileBase64: '', // required dataType base64 data:xxx;base64,
   typeFile: '', //audio or image or video
   contactName: '', // name contact in list number whatsapp
-  numberTo: '55999...', // number location country ex: 55...
-  message: 'Hello!', // text message...
+  numberTo: '556285072451', // number location country ex: 55...
+  message: '❤️', // text message...
 };
 
 axiosInstance

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fullscreen/fullscreen.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/attach/attach.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fit/fit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fullscreen/fullscreen.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/search/search.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/webLinks/webLinks.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/zmodem/zmodem.min.js"></script>
+    <style>
+      body {
+        overflow: hidden;
+      }
+      .xterm-text-layer {
+        padding: 10px;
+      }
+      #terminal {
+        width: 99vw;
+        height: 100vh;
+        padding-left: 0.5vw;
+        padding-right: 0.5vw;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="terminal"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+      String.prototype.hashCode = function () {
+        var hash = 0,
+          i,
+          chr;
+        if (this.length === 0) return hash;
+        for (i = 0; i < this.length; i++) {
+          chr = this.charCodeAt(i);
+          hash = (hash << 5) - hash + chr;
+          hash |= 0; // Convert to 32bit integer
+        }
+        return hash;
+      };
+
+      var term = new Terminal({
+        debug: true,
+        allowTransparency: true,
+        applicationCursor: true,
+        applicationKeypad: true,
+        normalFontWeight: 100,
+        fontSize: 14,
+        // lineHeight: 1.2,
+        cursorBlink: true,
+        convertEol: true,
+        cursorStyle: 'block', // “block” | “underline” | “bar” *
+      });
+
+      term.open(document.getElementById('terminal'));
+
+      fit.fit(term);
+      fullscreen.toggleFullScreen(term);
+
+      function addLinesTerminal(data) {
+        data.forEach((text, index) => {
+          if (text.toLowerCase().startsWith('>_started_')) {
+            term.clear();
+          } else {
+            term.write(text);
+          }
+        });
+      }
+
+      const socket = io('http://localhost:3000');
+
+      socket.on('console', (data) => {
+        addLinesTerminal(data);
+      });
+    </script>
+  </body>
+</html>

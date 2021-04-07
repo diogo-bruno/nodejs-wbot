@@ -1,8 +1,9 @@
 {
   "appconfig": {
-    "headless": false,
+    "headless": true,
     "isGroupReply": false,
-    "webhook": ""
+    "webhook": "",
+    "downloadMedia": false
   },
   "bot": [
     {
@@ -70,7 +71,7 @@
     }
   ],
   "blocked": [],
-  "noMatch": "{🤔|👍}",
+  "noMatch": "",
   "smartreply": {
     "suggestions": ["Hello", "Welcome to my store !!", "Thanks for reaching out 🙏"],
     "clicktosend": true

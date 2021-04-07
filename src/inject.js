@@ -7,6 +7,9 @@ WAPI.waitNewMessages(false, async (data) => {
     body.type = 'message';
     body.user = message.chatId._serialized;
     //body.original = message;
+    if (intents.appconfig.downloadMedia) {
+      downloadFile(message);
+    }
     if (intents.appconfig.webhook) {
       fetch(intents.appconfig.webhook, {
         method: 'POST',
@@ -110,3 +113,19 @@ WAPI.addOptions = function () {
   }
   mainDiv.children[mainDiv.children.length - 5].querySelector('div > div div[tabindex]').scrollTop += 100;
 };
+
+async function downloadFile(message) {
+  let filename = '';
+  if (message.type === 'document') {
+    filename = `${message.filename.split('.')[0]}_${Math.random().toString(36).substring(4)}`;
+  } else if (message.type === 'image' || message.type === 'video' || message.type === 'ptt' || message.type === 'audio') {
+    filename = `${message.chatId.user}_${Math.random().toString(36).substring(4)}`;
+  } else {
+    window.log("couldn't recognize message type. Skipping download");
+    return;
+  }
+  const buffer = await WAPI.downloadBuffer(message.deprecatedMms3Url);
+  const decrypted = await window.Store.CryptoLib.decryptE2EMedia(message.type, buffer, message.mediaKey, message.mimetype);
+  const data = await window.WAPI.readBlobAsync(decrypted._blob);
+  saveFile(data.split(',')[1], filename, message.mimetype);
+}

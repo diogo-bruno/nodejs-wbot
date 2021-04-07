@@ -1,3 +1,5 @@
+var path = require('path');
+var consoleOutput = require('./consoleOutput');
 var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
@@ -19,7 +21,20 @@ var exampleBody = {
   message: 'text mensagem...',
 };
 
-async function enableServiceHttpWBOT(page) {
+this.startServices = async () => {
+  app.use('/', express.static(path.join(process.cwd(), 'web/')));
+  app.use('/output-console', express.static(path.join(process.cwd(), 'output-console/')));
+
+  app.get('/getConsole', (req, res) => {
+    res.send(consoleOutput.getOutput());
+  });
+
+  app.listen(portService, function () {
+    console.log('App service running in port ' + portService + '!');
+  });
+};
+
+this.enableServiceHttpWBOT = async (page) => {
   app.post('/sendMessage', async (req, res) => {
     const body = req.body;
     let errorValidation = [];
@@ -97,9 +112,7 @@ async function enableServiceHttpWBOT(page) {
     res.send('Send script evaluate');
   });
 
-  app.listen(portService, function () {
-    console.log('App service running in port ' + portService + '!');
+  app.get('/enabledServiceHttpWBOT', (req, res) => {
+    res.send('Running...');
   });
-}
-
-module.exports.enableServiceHttpWBOT = enableServiceHttpWBOT;
+};

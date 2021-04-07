@@ -173,6 +173,8 @@ async function Main() {
 
     page.exposeFunction('getFile', utils.getFileInBase64);
 
+    page.exposeFunction('saveFile', utils.saveFileFromBase64);
+
     page.exposeFunction('resolveSpintax', spintax.unspin);
 
     await screenshotPage(page, 'launch');

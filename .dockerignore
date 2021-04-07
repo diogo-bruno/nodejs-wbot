@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+chromium-data
+chromium-data-docker
+win64-*
+screenshots
+screenshots-docker

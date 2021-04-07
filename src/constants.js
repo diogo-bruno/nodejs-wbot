@@ -1,5 +1,9 @@
 var path = require('path');
 
+this.DEFAULT_DATA_DIR = path.join(process.cwd(), 'chromium-data');
+
+console.log(this.DEFAULT_DATA_DIR);
+
 this.DEFAULT_CHROMIUM_ARGS = [
   '--disable-gpu',
   '--renderer',
@@ -33,9 +37,8 @@ this.DEFAULT_CHROMIUM_ARGS = [
   '--disable-setuid-sandbox',
   '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3803.0 Safari/537.36',
   '--lang=en-US,en;q=0.9',
+  '--disable-dev-shm-usage',
 ];
-
-this.DEFAULT_DATA_DIR = path.join(process.cwd(), 'chromium-data');
 
 /**
  * Name of the file that stores bot configuration

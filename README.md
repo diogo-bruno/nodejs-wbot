@@ -87,3 +87,6 @@ npm start
 
 - [Node](https://nodejs.org/en/)
 - [puppeteer](https://github.com/GoogleChrome/puppeteer)
+
+docker build -t diogo/wbot .
+docker run -p 3300:3300 -v C:\Works\ssp\nodejs-wbot\chromium-data-docker:/usr/src/app/chromium-data -d diogo/wbot
