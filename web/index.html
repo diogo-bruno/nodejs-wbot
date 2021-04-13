@@ -41,6 +41,11 @@
         font-family: monospace;
         font-size: small;
       }
+      .iframe-terminal {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
     </style>
 
     <title>W-Bot</title>
@@ -77,52 +82,54 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-      function httpGet(theUrl, callbackResponse) {
-        if (window.XMLHttpRequest) {
-          xmlhttp = new XMLHttpRequest();
-        } else {
-          xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
-        }
-        xmlhttp.onreadystatechange = function () {
-          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            callbackResponse(xmlhttp.responseText);
-          }
-        };
-        xmlhttp.open('GET', theUrl, false);
-        xmlhttp.send();
-      }
+      // function httpGet(theUrl, callbackResponse) {
+      //   if (window.XMLHttpRequest) {
+      //     xmlhttp = new XMLHttpRequest();
+      //   } else {
+      //     xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+      //   }
+      //   xmlhttp.onreadystatechange = function () {
+      //     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+      //       callbackResponse(xmlhttp.responseText);
+      //     }
+      //   };
+      //   xmlhttp.open('GET', theUrl, false);
+      //   xmlhttp.send();
+      // }
 
-      var scrollEnd = true;
-      var lastScrollPosition = 0;
+      // var scrollEnd = true;
+      // var lastScrollPosition = 0;
 
-      setInterval(function () {
-        httpGet('/getConsole', function (response) {
-          document.querySelector('#terminal_').innerHTML = response;
-          var textarea = document.querySelector('#terminal_ textarea');
+      // setInterval(function () {
+      //   httpGet('/getConsole', function (response) {
+      //     document.querySelector('#terminal_').innerHTML = response;
+      //     var textarea = document.querySelector('#terminal_ textarea');
 
-          if (scrollEnd) {
-            textarea.scrollTop = textarea.scrollHeight;
-          } else {
-            textarea.scrollTop = lastScrollPosition;
-          }
+      //     if (scrollEnd) {
+      //       textarea.scrollTop = textarea.scrollHeight;
+      //     } else {
+      //       textarea.scrollTop = lastScrollPosition;
+      //     }
 
-          textarea.onscroll = logScroll;
+      //     textarea.onscroll = logScroll;
 
-          function logScroll(e) {
-            //console.log(textarea.scrollTop);
-            //console.log(textarea.scrollHeight);
-            var scrollPosition = (textarea.scrollTop + textarea.offsetHeight) / textarea.scrollHeight;
+      //     function logScroll(e) {
+      //       //console.log(textarea.scrollTop);
+      //       //console.log(textarea.scrollHeight);
+      //       var scrollPosition = (textarea.scrollTop + textarea.offsetHeight) / textarea.scrollHeight;
 
-            if (scrollPosition < 1) {
-              scrollEnd = false;
-            } else {
-              scrollEnd = true;
-            }
-            //console.log(`Scroll position: ${e.target.scrollTop}`);
-            lastScrollPosition = e.target.scrollTop;
-          }
-        });
-      }, 1000);
+      //       if (scrollPosition < 1) {
+      //         scrollEnd = false;
+      //       } else {
+      //         scrollEnd = true;
+      //       }
+      //       //console.log(`Scroll position: ${e.target.scrollTop}`);
+      //       lastScrollPosition = e.target.scrollTop;
+      //     }
+      //   });
+      // }, 1000);
+
+      document.querySelector('#terminal_').innerHTML = "<iframe class='iframe-terminal' src='/xterm.html'></iframe>";
     </script>
   </body>
 </html>

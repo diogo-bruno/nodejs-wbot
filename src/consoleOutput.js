@@ -14,7 +14,7 @@ const io = require('socket.io')(server, {
 const historyMsgs = [];
 
 io.on('connection', (client) => {
-  console.log('a user connected');
+  //console.log('a user connected');
 
   client.on('event', (data) => {
     //console.log(data);

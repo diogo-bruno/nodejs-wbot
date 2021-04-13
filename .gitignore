@@ -66,4 +66,5 @@ chromium-data-docker
 screenshots/*
 testes
 screenshots
+output-console
 screenshots-docker

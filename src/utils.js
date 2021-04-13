@@ -1,8 +1,10 @@
-var path = require('path');
+const path = require('path');
 const mime = require('mime');
-var fs = require('fs');
-var os = require('os');
-var platform = os.platform();
+const fs = require('fs');
+const os = require('os');
+const platform = os.platform();
+const axios = require('axios');
+var sha1 = require('sha1');
 
 this.injection = function (filename) {
   return new Promise((resolve, reject) => {
@@ -99,4 +101,25 @@ this.mkdirRecurse = (inputPath) => {
     fs.mkdirSync(inputPath);
   }
   this.mkdirRecurse(basePath);
+};
+
+this.downloadImageFromUrl = (url) => {
+  var image_path = os.tmpdir() + path.sep + sha1(url) + '.jpg';
+
+  return axios({
+    url,
+    responseType: 'stream',
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
+      Origin: '',
+    },
+  }).then(
+    (response) =>
+      new Promise((resolve, reject) => {
+        response.data
+          .pipe(fs.createWriteStream(image_path))
+          .on('finish', () => resolve())
+          .on('error', (e) => reject(e));
+      })
+  );
 };

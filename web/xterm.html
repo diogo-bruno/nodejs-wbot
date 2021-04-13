@@ -44,7 +44,7 @@
       };
 
       var term = new Terminal({
-        debug: true,
+        debug: false,
         allowTransparency: true,
         applicationCursor: true,
         applicationKeypad: true,
@@ -53,7 +53,7 @@
         // lineHeight: 1.2,
         cursorBlink: true,
         convertEol: true,
-        cursorStyle: 'block', // “block” | “underline” | “bar” *
+        cursorStyle: 'underline', // “block” | “underline” | “bar” *
       });
 
       term.open(document.getElementById('terminal'));
